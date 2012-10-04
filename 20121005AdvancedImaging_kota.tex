@@ -58,7 +58,7 @@
 %\end{abstract}
 
 \begin{abstract}
-In the lecture, we will overview methods used for tracking in cell and developmental biology. Focus is made on the details of generally used two-step strategy namely particle detection and linking. In practical works, we use several image processing and analysis tools and explore strategies for quantifying the microtubule polarity of EB1 labeled cells within Drosophila embryo. Students learn how to measure their movement in image sequences by manual tracking, kymograph, automated tracking and by PIV (Particle Image Velocimetry). 
+In the lecture, we will overview methods used for tracking in cell and developmental biology. Focus is made on the details of generally used two-step strategy namely particle detection and linking. In practical works, we use several image processing and analysis tools and explore strategies for quantifying the microtubule polarity of EB1 labeled cells within Drosophila embryo. Students learn how to measure their movement in image sequences by manual tracking, kymograph and automated tracking. 
 \end{abstract}
 
 \section{Lecture Notes}
@@ -132,9 +132,9 @@ ImageJ ``manual tracker plugin'', we will do this in the practical.
 
 \item[Get Image Files]\hfill\\
 
-If capturing of EB3 image sequences were successful, we use them. Otherwise, we use an example image sequence of EB1 labeled cells. EB1 behaves similar to EB1 and moves along microtubules. A file named \textbf{eb18\_b.tif} is a sequence taken from single cultured cell labeled with eb1. 
+If capturing of EB3 image sequences were successful (I hope so!!), we use them. Otherwise, we use an example image sequence of EB1 labeled cells. EB1 behaves similar to EB1 and moves along microtubules. A file named \textbf{eb18\_b.tif} is a sequence taken from single cultured cell labeled with eb1. This sequence is accessible by downloading an ImageJ plugin "Sample Image Loader". Instruction for installing this plugin is written in below.  
 
-Download and save the image files, either the sequence you have taken or the example sequence eb18\_b.tif in your local computer. We try several different ways to measure movement of EB3 or EB1 protein by tracking. Before tracking, examine the sequence first using stack related functions. 
+Download and save the image files, the sequence you have taken or the example sequence eb18\_b.tif in your local computer. We try several different ways to measure movement of EB3 or EB1 protein by tracking. Before tracking, examine the sequence first using stack related functions. 
 
 \item[Open the file in Fiji by]\hfill\\
 
@@ -427,7 +427,18 @@ and scroll the page down to ``Installation'' section. There you will find links 
 \item Move or copy above two files, cv100.dll and cxcore100.dll, to the Fiji or ImageJ folder (\textbf{not the plugin folder}).
 
 \end{enumerate}
-
+\item[Analysis]\hfill\\
+\begin{enumerate}
+\item PIV plugin works only with two-frame stack. Reduce the stack size by Duplicating only part of the stack. To do so:\\
+\begin{itemize}
+\item \verb"[Image > Duplicate...]" then in the dialog panel, set the duplication range only two frames e.g. 10-11. 
+\end{itemize} 
+\item There are three different functions for doing PIV under \verb"[Plugins > PIV >]", Cross-Correlation, Basic and Advanced. Zong recommends not to use Cross-Correlation. We try to do PIV using ``Basic''.
+\item When you choose \verb"[Plugins > PIV > Basic]", you will see a panel asking you to input parameters. There are three iterations, first start to estimate displacement of signal with large grids and then to finer grids. By starting from larger grids, estimation procedure recognizes global movement first and then more detailed movements in later iterations. Try to set windows size so that it fits the size of the image. 
+\item Final output is a text file. This could be saved anywhere, but be sure that you know where it is. 
+\item To plot the PIV field (Vectors), \verb"[Plugins > PIV > Plot]". Try to plot without changing the default value. If the plot looks bad with too large / small arrows, close the plot and do the plotting again with sums adjusted parameters.  
+\item \textbf{OPTIONAL} Since output is a text file of vector values, you could import the text file from Excel or R to plot histogram of velocities. 
+\end{enumerate}
 
 \bibliography{20121005AdvancedImaging_kota.bib}
 
