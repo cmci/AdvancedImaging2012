@@ -1,0 +1,10 @@
+*.fbd_latexmk
+*.dvi
+*.blg
+*.bbl
+*.aux
+*.fls
+*.log
+.DS_Store
+.fdb_latexmk
+*.fdb_latexmk

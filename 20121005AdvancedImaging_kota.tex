@@ -1,0 +1,437 @@
+%\documentclass[11pnt, twocolumn]{article}
+\documentclass[11pnt]{article}
+%\documentclass[11pnt]{memoir}
+
+\bibliographystyle{plainnat}
+%% Better math support:
+\usepackage{amsmath}
+
+%% Bibliography style:
+\usepackage{mathptmx}           % Use the Times font.
+\usepackage{graphicx}           % Needed for including graphics.
+\usepackage{url}                % Facility for activating URLs.
+
+%% Set the paper size to be A4, with a 2cm margin 
+%% all around the page.
+\usepackage[a4paper,margin=3cm]{geometry}
+
+%% Natbib is a popular style for formatting references.
+\usepackage{natbib}
+%% bibpunct sets the punctuation used for formatting citations.
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+%% textcomp provides extra control sequences for accessing text symbols:
+\usepackage{textcomp}
+\newcommand*{\micro}{\textmu}
+%% Here, we define the \micro command to print a text "mu".
+%% "\newcommand" returns an error if "\micro" is already defined.
+
+% header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[CO,CE]{EMBL Advanced Imaging 2012}
+\fancyhead[RO, LE] {EMBL}
+\fancyhead[LO, RE] {Miura}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%command for menu tree
+\newcommand{\ijmenu}[1]{\texttt{\small#1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Start of the document.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\author{Kota Miura\\
+  Centre for Molecular and Cellular Imaging\\
+  EMBL Heidelberg\\
+  69120  Germany\\
+  \\
+  \texttt{miura@embl.de}\\
+  \texttt{http://cmci.embl.de}}
+\date{\today}
+\title{Tracking Principles / Practicals}
+\maketitle
+%\begin{abstract}
+%Step-by Step Instructions for Directionality Analysis
+%\end{abstract}
+
+\begin{abstract}
+In the lecture, we will overview methods used for tracking in cell and developmental biology. Focus is made on the details of generally used two-step strategy namely particle detection and linking. In practical works, we use several image processing and analysis tools and explore strategies for quantifying the microtubule polarity of EB1 labeled cells within Drosophila embryo. Students learn how to measure their movement in image sequences by manual tracking, kymograph, automated tracking and by PIV (Particle Image Velocimetry). 
+\end{abstract}
+
+\section{Lecture Notes}
+
+Time series of digital images, usually called ‘a stack’, contains temporal dynamics of position and intensity. By analyzing these dynamics, we can extract numerical parameter which then enables us to characterize the biological system. There are three types of dynamics. 
+\begin{enumerate}
+\item Position does not change but intensity changes over time. 
+\item Position changes but the intensity does not change. 
+\item Both Position and Intensity change over time. 
+\end{enumerate}
+The lecture is about the measurement of type (i), generally called object tracking. 
+
+For recent review on object tracking in cell and developmental biology, see  articles by \cite{Meijering2012}. A bit old review on single particle tracking by Saxton is still an excellent textbook affording rich biophysical insights for analyzing tracking results \citep{Saxton1997}. For the classic ``tracking'' mentioned in the talk, or the presumptive fate map, see \cite{Vogt1925}. This historical article could be downloaded via Google books. Magnificent movies produced by Keller et. al. using single plane illumination microscopy and extensive image processing could be accessed through the web page of the paper in Science \citep{Keller2008}. Comparison of segmentation strategy in object tracking was published in 2001 by \cite{Cheezum2001a} and has been a frequently cited paper in the field of biological object tracking. For overall review on image analysis methods see \cite{Hamilton2009}.
+
+\subsection{Segmentation techniques}
+\begin{itemize}
+\item Manual tracking\\
+ImageJ ``manual tracker plugin'', we will do this in the practical.
+\item Manual contour tracing and centroid
+\item Thresholding
+\item Local intensity maxima
+\item Gaussian-fitting
+\begin{itemize}
+\item Many applications for getting sub-pixel resolution coordinates.
+\item You also saw this already in super-resolution microscopy talks by Ricardo and Meilke. 
+\item Vaccinia Virus tracking example
+\end{itemize}
+\item Active Contour (SNAKES), Level-set
+\begin{itemize} 
+\item \url{http://iacl.ece.jhu.edu/projects/gvf/}
+\item Quimp11, ImageJ Plugin\\ \url{http://www2.warwick.ac.uk/fac/sci/systemsbiology/staff/bretschneider/quimp/}
+\end{itemize}
+\item Machine Learning
+\begin{itemize}
+\item There is no tracking package that does tracking using machine learning based segmentation, but it is a strong candidate in coming days. 
+\item Fiji plugin ``Advanced Weka Segmentation''\\
+\url{http://fiji.sc/Advanced_Weka_Segmentation}
+\end{itemize}
+\item Pattern matching (cross-correlation or sum-of-difference technique)
+\begin{itemize}
+\item 3D tracking of macrophage-like cells. \\See \cite{Grabher2007}
+\end{itemize}
+\end{itemize}
+
+\subsection{Linking techniques}
+
+\begin{itemize}
+	\item Nearest-Neighbor Linking\\
+	This is the simplest principle linking an object in one time point to the other. 
+	\item Evaluation of Overlaps
+	\item Graph-theory based global optimization
+	\begin{itemize}
+		\item \cite{Vallotton2003a}
+	\end{itemize}
+	\item Designing cost functions for the global optimization. 
+	\begin{itemize}
+		\item \cite{Sbalzarini2005a}
+		\item \cite{Sbalzarini2006a}
+	\end{itemize}
+	\item ``Tracklets'', a new way of dealing with dividing cells.
+	\begin{itemize}
+		\item \cite{Jaqaman2009a}
+		\item \cite{Bise2011}
+	\end{itemize}
+\end{itemize}
+
+
+\section{Sample Sequences}
+
+\begin{description}
+
+\item[Get Image Files]\hfill\\
+
+If capturing of EB3 image sequences were successful, we use them. Otherwise, we use an example image sequence of EB1 labeled cells. EB1 behaves similar to EB1 and moves along microtubules. A file named \textbf{eb18\_b.tif} is a sequence taken from single cultured cell labeled with eb1. 
+
+Download and save the image files, either the sequence you have taken or the example sequence eb18\_b.tif in your local computer. We try several different ways to measure movement of EB3 or EB1 protein by tracking. Before tracking, examine the sequence first using stack related functions. 
+
+\item[Open the file in Fiji by]\hfill\\
+
+\verb"[File > Open...]"\\
+
+\item[Check dimensions of the image by]\hfill\\
+\verb"[Image > Properties...]"\\
+
+\dots Image stacks are by default taken as a z-series and not t-series. Set Slices to 1, and Frames to appropriate size (number of frames).
+
+\item[Examine the sequence using stack tools.]\hfill\\
+
+Explore stack functions. \\
+Start animation, Stop animation, change frame rates, Manipulations\dots These functions are located under\hfill\\
+
+\verb"[Image > Stack >]"\\
+
+\item[A useful plugin for stack]\hfill\\
+
+Running Z Projector plugin averages defined number of frames with moving window. This processing is powerful when you want to reduce noise from time-lapse sequences. Drawback is that some details of movement might be attenuated due to averaging. The plugin could be downloaded from
+\begin{itemize}
+\item\url{http://valelab.ucsf.edu/~nico/IJplugins/Running_ZProjector.html}
+\end{itemize}
+\begin{enumerate}
+\item Download the plugin from above URL.
+\item Install the plugin using \verb"[Plugin > Install...]"
+\item Restart Fiji, just to be sure with the installation. 
+\item Try running it on EB1 or EB3 sequence. 
+\end{enumerate}
+
+\item[A plugin for sample images]\hfill\\
+
+Download the plugin "Sample Image Loader" linked in the following page and install just like you did with the running Z-projector. 
+\begin{itemize}
+\item\url{http://cmci.embl.de/downloads/sampleimageloader}
+\end{itemize}
+
+\end{description}
+
+\section{Manual Tracking}
+
+In the simplest case, tracking can be done manually. The user can read
+out the coordinate position of the target object directly from the
+imaging software. In ImageJ, user can read out position coordinate
+indicated in the status bar by placing the cross-hair pointer over the
+object. Then coordinates can be listed in standard spreadsheet software
+such as Microsoft Excel or R for further analysis. 
+
+An ImageJ plug-in is also freely available to assist such simple way of
+tracking. An obvious disadvantage of the manual tracking is that the
+mouse-clicking by the user could be erroneous, as we are still human
+who gets tired after thousands of clicking. For such errors,
+measurement errors can be estimated by tracking the same object several
+times and this error could then be indicated together with the results.
+Otherwise, automated tracking is more objective, but if you have only
+limited number of tracks to analyze, manual tracking is a best choice
+before start to explore complex parameter space of automated tracking
+setting.
+
+The manual tracking can be assisted by an ImageJ plug-in
+"Manual Tracking". This plug-in
+enables the user to record x-y coordinates of the position where the
+user clicked using mouse in each frame within a stack. The download
+site has a detailed instruction on how to use.  
+
+\begin{description}
+\item[Download and Installation]\hfill\\
+
+\textbf{Manual Tracking (Manual\_Tracking.class)} is a plugin bundled with Fiji. If you are using ImageJ, download the plugin file from the link below. 
+\begin{itemize}
+\item \url{http://rsbweb.nih.gov/ij/plugins/track/track.html}
+\end{itemize}
+
+\item[Measurements]\hfill\\
+
+\begin{enumerate}
+\item Your task now is to track the movement of individual EB3 signal using the ManualTracker PlugIn. To ease detection of the signal, enhance contrast and convert the image stack from 16-bit to 8-bit.
+\\
+\\
+\verb"[Image > Adjust > Brightness and Contrast]"
+\\
+\\
+and then convert to 8-bit
+\\
+\\
+\verb"[Image > Type > 8bit]"
+\\
+\item Then 
+\begin{enumerate}
+\item Check "centering correction", use Local Maximum.
+\item Start manual tracking by clicking "Add track".
+\item End tracking by "End Track"
+\item Show tracks by "Drawing" Functions"
+\end{enumerate}
+
+You could track different particles by repeating steps between 2 and 3. Results window will list the measured positions for particles and step 4 will show a track overlaid image stack.
+
+\item Tracked data can be saved by activating "Result" window and 
+\\
+\\
+\verb"[File > Save as...]"
+\\
+\item \textbf{OPTIONAL:} Copy and paste the result table and plot the track in Excel or R and calculate a histogram of velocity distribution.
+\end{enumerate}
+
+\end{description}
+
+\section{Kymograph}
+
+Kymographs are a two-dimensional time traces, where time \textit{t} is in Y axis and space along a one-dimensional contour is in \textit{X}, and the dynamical variable \textit{F(x,t) }is
+visualized as an image. Kymographs provide a fast and convenient way to
+visualize motion and dynamics in microscopy images.We try measuring the speed of EB1 or EB3 movement using Kymographs. 
+
+\begin{enumerate}
+\item Open the image stack. 
+\item Contrast enhance, 
+
+\verb"[Image > Adjust > Brightness and Contrast]"
+
+and then convert to 8-bit
+
+\verb"[Image > Type > 8bit]"
+
+\item Do maximum intensity Z-projection 
+
+\verb"[Image > Stacks > Z-projection]". 
+
+\item Choose segmented line ROI tool (to do this, right click line-ROI icon in the menu bar. You will see a drop down selection). With projection image generated above, trace one of the tracks in the projection image.
+
+\item Go back to the stack (click the window and activate it - or bring it to the front - ), 
+
+\verb"[Edit > Selection > Restore Selection]"
+
+Then 
+
+\verb"[Image > Stacks > Reslice...]" 
+
+Don't change parameters in the dialog window, simply OK. Resulting image is the kymograph. 
+
+\item To estimate the velocity of movement from kymograph, you simply need to measure the slope of the diagonal line shown in the kymograph. Since x-axis is distance and y-axis is time, if the starting point of the diagonal line is $(x_1, y_1)$ and the end point of the line is $(x_2, y_2)$ then the $slope = velocity$ is  
+\[
+velocity = (x_2 - x_1) / (y_2 - y_1) 
+\]
+Here is a simple macro to calculate this automatically from straight line selection. 
+\begin{description}
+\item ImageJ macro for measuring kymograph
+\begin{verbatim}
+// scale and dt must be manually set
+var xyscale=0.207; //um
+var dt=0.69; //sec
+
+// sampling ROI coordinates, should be a straight line selection
+print("-------------------");
+getLine(x1, y1, x2, y2, lineWidth);
+print("start ("+x1+" , "+y1+")   end ("+ x2 + " , " + y2 + ") ");
+
+// calculation of speed. 
+dx=abs(x2-x1);
+dy=abs(y2-y1);
+dx *= xyscale;
+dy *= dt;
+velocity= dx/dy;
+//output in log window.
+print("dx = "+ dx +"um   during:" + dy + "sec");
+print("Velocity = "+ d2s(velocity, 3) +" [um/s]");
+\end{verbatim}
+\end{description}
+
+To use this macro, do 
+\\
+\\
+\verb"[File > New > Script]"
+\\
+to launch script editor, then select 
+\\
+\\
+\verb"[Language > ImageJ Macro]" 
+\\
+in the script editor menu, copy and paste the code above. You could also copy and paste from the following page. 
+\begin{itemize}
+\item \url{http://cmci.embl.de/documents/121005advancedimg}
+\end{itemize}
+
+\item \textbf{OPTIONAL:} Collect your data in Excel or R and plot tracks and a histogram of velocity distribution.
+
+
+\item \textbf{OPTIONAL:} For those interested in using kymograph intensively, there is a good plugin that assists you in doing so efficiently. 
+\begin{itemize}
+\item Multiple Kymograph Plugin for ImageJ\\  \url{http://www.embl.de/eamnet/html/kymograph.html}
+\end{itemize}
+
+\item \textbf{OPTIONAL:} To quantify ambiguous kymograph (meaning hard to draw a line, texture like streakes) use:
+\begin{itemize}
+\item Kymoquant macro for ImageJ\\ \url{http://cmci.embl.de/downloads/kymoquant}
+\end{itemize}
+
+\end{enumerate}
+
+\section{Automated Tracking: ParticleTracker Plugin}
+
+We use open source software Fiji for particle tracking. Fiji is a distribution of ImageJ, bundled with many useful plugins. 
+
+\begin{description}
+
+\item[Download ParticleTracker Plugin and Install]\hfill\\
+
+The plugin could be down loaded from
+\begin{itemize}
+\item \url{http://www.mosaic.ethz.ch/Downloads/ParticleTracker}
+\end{itemize}
+To install the downloaded plugin, \verb"[Plugins > Install...]". You could also directly copy the file to plugins folder under Fiji directory and do \verb"[Help > Refresh Menus]".
+
+Just in case if the above plugin somehow does not work, try download and use the version linked in the flowing site. 
+
+\begin{itemize}
+\item \url{http://cmci.embl.de/downloads/particletracker2d}
+\end{itemize}
+
+\item[Start the ParticleTracker plugin]\hfill\\
+
+Start the particleTracker by \verb"[Plugins > Mosaic > ParticleTracker 2D/3D]". 
+
+\item[Study Dot Detection Parameter]\hfill\\
+
+This tracking tool has two parts. First, all dots in each frame are detected, and then dots in successive frames are linked. The first task then is to determine three parameters for dot detection. There are three parameters. 
+\begin{enumerate}
+\item \textbf{Radius}\hfill\\
+Expected diameter of dot to be detected in pixels. 
+\item \textbf{CutOff}\hfill\\
+Cutoff level for the none-particle discrimination criteria, a value for each dot that is based on intensity moment order 0 and 2. 
+\item \textbf{Percentile}\hfill\\
+Larger the value, more particles with dark intensity will be detected. Corresponds to the area proportion below intensity histogram in the upper part of the histogram. 
+\end{enumerate}
+Try setting different numbers for these parameters and click "Preview Detected". Red circles appear in the image stack. You could change the frames using the slider below the button. 
+
+After some trials, set parameters to what you think is optimum. 
+
+\item[Set Linking parameters]\hfill\\
+
+Two parameters for linking detected dots should be set. 
+\begin{enumerate}
+\item \textbf{Link Range}\hfill\\
+\dots could be more than 1, if you want to link dots that disappears and reappears. If not, set the value to 1.
+\item \textbf{Displacement}\hfill\\
+\dots expected maximum distance that dots could move from one frame to the next. Unit is in pixels. 
+\end{enumerate}
+After parameters are set, click "OK". Tracking starts. 
+
+\item[Inspect the Tracking Results]\hfill\\
+
+When tracking is done, a new window titled "Results" appears. At the bottom of the window, there are many buttons. Click "Visualize all trajectories", and then a duplicate of the image stack overlaid with trajectories will appear. 
+
+Select a region within the stack using rectangular ROI tool and then click "Focus on Area". This will create another image stack, with only that region. Since this image is zoomed, you could carefully check if the tracking was successful or not. 
+
+If you think the tracking was not successful, then you should reset all the parameters and do the tracking again.
+
+\item[Export the tracking results]\hfill\\
+
+To analyze the results in R, data should be saved as a file. To do so, first click "All Trajectories to Table". Results table will then created. In this results table window, select \verb"[File > Save As...]" and save the file on your desktop. By default, file type extension is ".xls", excel format, but change this to ".csv". CSV stands for "comma separated file", and this is more classic but general data format which you could easily import in many software including R.  
+
+
+\item [Further analysis] \hfill\\
+
+\textbf{OPTIONAL:} Import your results from Excel or R and plot tracks and a histogram of velocity distribution.
+
+\end{description}
+
+\section{Particle Image Velocimetry (PIV)}
+
+\begin{description}
+\item[Download and Installation]\hfill\\
+
+There is a \textbf{PIV} plugin bundled with Fiji, but we use another PIV plugin developed by Qingzong Tseng. You need several files for this plugin to run. Here is the recipe for running the plugin in 64-bit Windows OS. 
+ 
+\begin{enumerate}
+\item Go to 
+\begin{itemize}
+\item\url{https://sites.google.com/site/qingzongtseng/piv} 
+\end{itemize}
+and scroll the page down to ``Installation'' section. There you will find links to \textbf{PIV\_.jar}, \textbf{javacv.jar} and \textbf{jna.jar} file. Download these three files.
+
+\item Move or copy above three files to the \textbf{plugin folder} within Fiji or ImageJ folder. 
+
+\item Go to 
+\begin{itemize}
+\item\url{https://sites.google.com/site/qingzongtseng/template-matching-ij-plugin} 
+\end{itemize}
+(or you could click ``template matching and slice alignment'' link in the side bar in Zong's page) and scroll down to ``Installation'' section. There you will find a link to OpenCV library for 64-bit windows. Download the file and unzip it. You will find two files, cv100.dll and cxcore100.dll, then. 
+
+\item Move or copy above two files, cv100.dll and cxcore100.dll, to the Fiji or ImageJ folder (\textbf{not the plugin folder}).
+
+\end{enumerate}
+
+
+\bibliography{20121005AdvancedImaging_kota.bib}
+
+\end{description}
+
+
+\end{document}
