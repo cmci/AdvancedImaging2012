@@ -69,9 +69,11 @@ Time series of digital images, usually called ‘a stack’, contains temporal d
 \item Position changes but the intensity does not change. 
 \item Both Position and Intensity change over time. 
 \end{enumerate}
-The lecture is about the measurement of type (i), generally called object tracking. 
+The lecture is about the measurement of type 2, generally called object tracking. Realistic situation demands type 3 \textit{e.g.} you need to get a FRAP curve out of moving organelle, but we approximate the sample as type 2 as we need to learn the principle of tracking first, and type 3 will be your research that asks your ability to apply the full knowledge you acquired in the EMBL Advanced Imaging Course 2012, and probably some technique to use scripting languages.  
+\\
+\\
+For recent review on object tracking in cell and developmental biology, see \cite{Meijering2012}. This article also contains an extensive list of available tracking packages. A bit old review on single particle tracking by Saxton is still an excellent textbook affording rich biophysical insights for analyzing tracking results \citep{Saxton1997}. For the classic ``tracking'' mentioned in the talk, or the presumptive fate map, see \cite{Vogt1925} only if you love biology (I am sure you do). This historical article could be downloaded via Google books. Magnificent movies produced by Keller et. al. using single plane illumination microscopy and extensive image processing that almost killed EMBL cluster by steaming it could be accessed through the web page of the paper in Science \citep{Keller2008}. Comparison of segmentation strategy in object tracking was published in 2001 by \cite{Cheezum2001a} and has been a frequently cited paper in the field of biological object tracking. For overall review on image analysis methods see \cite{Hamilton2009}.
 
-For recent review on object tracking in cell and developmental biology, see  articles by \cite{Meijering2012}. A bit old review on single particle tracking by Saxton is still an excellent textbook affording rich biophysical insights for analyzing tracking results \citep{Saxton1997}. For the classic ``tracking'' mentioned in the talk, or the presumptive fate map, see \cite{Vogt1925}. This historical article could be downloaded via Google books. Magnificent movies produced by Keller et. al. using single plane illumination microscopy and extensive image processing could be accessed through the web page of the paper in Science \citep{Keller2008}. Comparison of segmentation strategy in object tracking was published in 2001 by \cite{Cheezum2001a} and has been a frequently cited paper in the field of biological object tracking. For overall review on image analysis methods see \cite{Hamilton2009}.
 
 \subsection{Segmentation techniques}
 \begin{itemize}
@@ -83,7 +85,7 @@ ImageJ ``manual tracker plugin'', we will do this in the practical.
 \item Gaussian-fitting
 \begin{itemize}
 \item Many applications for getting sub-pixel resolution coordinates.
-\item You also saw this already in super-resolution microscopy talks by Ricardo and Meilke. 
+\item You also saw this already in super-resolution microscopy talks by Ricardo and Melike. 
 \item Vaccinia Virus tracking example
 \end{itemize}
 \item Active Contour (SNAKES), Level-set
@@ -125,6 +127,19 @@ ImageJ ``manual tracker plugin'', we will do this in the practical.
 	\end{itemize}
 \end{itemize}
 
+\subsection{Tracking Packages we do not try, but worth mentioning here.}
+
+For single molecule trackers, there is a pretty new plugin called PTAj, written by Yoshiyuki Arai. We do not try this plugin in the practical but for those involved in single molecule imaging, it might be worth trying it at your home institute. The plugin offers sophisticated interface to review the tracking results. We all know that even though the tracking is automatic, we start checking each track manually just to be sure, and just to be sure\dots
+
+\begin{itemize}
+\item \url{https://github.com/arayoshipta/projectPTAj}
+\end{itemize}
+
+There is also a new ``all-in-one'' tracking plugin for ImageJ. It's name is TrackMate, written by Jean-Yves Tinevez. The linking algorithm includes the most-up-to-date ``Tracklets'' and allows to track merging/splitting objects. I have had not time to test this plugin thoroughly, but the interface is similar to Imaris and should be easy for people who are used to wizard-style parameter setting for tracking. For developers, the attractive feature of this plugin is that it offers interface to implement your own algorithm for segmentation and linking. 
+
+\begin{itemize}
+\item \url{http://fiji.sc/TrackMate}
+\end{itemize}
 
 \section{Sample Sequences}
 
@@ -154,7 +169,7 @@ Start animation, Stop animation, change frame rates, Manipulations\dots These fu
 
 \item[A useful plugin for stack]\hfill\\
 
-Running Z Projector plugin averages defined number of frames with moving window. This processing is powerful when you want to reduce noise from time-lapse sequences. Drawback is that some details of movement might be attenuated due to averaging. The plugin could be downloaded from
+Running Z Projector plugin, written by Nico Stuurman, averages defined number of frames with moving window. This processing is powerful when you want to reduce noise from time-lapse sequences. Drawback is that some details of movement might be attenuated due to averaging. The plugin could be downloaded from
 \begin{itemize}
 \item\url{http://valelab.ucsf.edu/~nico/IJplugins/Running_ZProjector.html}
 \end{itemize}
@@ -203,7 +218,7 @@ site has a detailed instruction on how to use.
 \begin{description}
 \item[Download and Installation]\hfill\\
 
-\textbf{Manual Tracking (Manual\_Tracking.class)} is a plugin bundled with Fiji. If you are using ImageJ, download the plugin file from the link below. 
+\textbf{Manual Tracking (Manual\_Tracking.class)} is a plugin bundled with Fiji. If you are using ImageJ, download the plugin file from the link below. The plugin was written by Fabrice Cordelieres.
 \begin{itemize}
 \item \url{http://rsbweb.nih.gov/ij/plugins/track/track.html}
 \end{itemize}
@@ -321,7 +336,7 @@ in the script editor menu, copy and paste the code above. You could also copy an
 \item \textbf{OPTIONAL:} Collect your data in Excel or R and plot tracks and a histogram of velocity distribution.
 
 
-\item \textbf{OPTIONAL:} For those interested in using kymograph intensively, there is a good plugin that assists you in doing so efficiently. 
+\item \textbf{OPTIONAL:} For those interested in using kymograph intensively, there is a good plugin that assists you in doing so efficiently. The plugin was written by Jens Rietdorf and Arne Seitz
 \begin{itemize}
 \item Multiple Kymograph Plugin for ImageJ\\  \url{http://www.embl.de/eamnet/html/kymograph.html}
 \end{itemize}
@@ -330,12 +345,13 @@ in the script editor menu, copy and paste the code above. You could also copy an
 \begin{itemize}
 \item Kymoquant macro for ImageJ\\ \url{http://cmci.embl.de/downloads/kymoquant}
 \end{itemize}
+Written by myself, with valuable suggestions from Peter Lenert. 
 
 \end{enumerate}
 
 \section{Automated Tracking: ParticleTracker Plugin}
 
-We use open source software Fiji for particle tracking. Fiji is a distribution of ImageJ, bundled with many useful plugins. 
+This plugin uses linking algorithm that involves global optimization based on cost function that involves signal intensity and its second order derivative. The plugin was first written as a Matlab code by Ivo Sbalzarini and the migrated to ImageJ plugin by his group members, Guy Levy and Janick Cardinale.
 
 \begin{description}
 
