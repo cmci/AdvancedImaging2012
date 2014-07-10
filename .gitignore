@@ -8,3 +8,4 @@
 .DS_Store
 .fdb_latexmk
 *.fdb_latexmk
+tags/
