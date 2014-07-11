@@ -29,7 +29,7 @@
 % header
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\fancyhead[CO,CE]{EMBL Advanced Imaging 2013}
+\fancyhead[CO,CE]{EMBL Advanced Fl. Imaging 2014}
 \fancyhead[RO, LE] {EMBL}
 \fancyhead[LO, RE] {Kota Miura}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -58,35 +58,58 @@
 %\end{abstract}
 
 \begin{abstract}
-In the lecture, I will give an overview of tracking methods used in cell and developmental biology. Focus is made on the details of generally used two-step strategy namely particle detection and linking. In our practical, we try using several image processing and analysis tools and explore tracking techniques for measuring EB3 movement in cultured cells. We try manual tracking, kymograph and automated tracking. 
+This lecture is an overview of tracking methods used in cell and developmental biology. Focus is made on the details of generally used two-step strategy by particle detection and particle linking. For those who are interested tutorials for using tracking plugins are also available in this note: manual tracking, kymograph and automated tracking. 
 \end{abstract}
 
 \section{Lecture Notes}
 
-Time series of digital images, usually called ‘a stack’, contains temporal dynamics of position and intensity. By analyzing these dynamics we can extract numerical parameters which then enable us to characterize the biological system. There are three types of dynamics. 
+Biological system is intrinsically dynamic. Time series of digital images, usually called ‘a stack’, contains temporal dynamics of position and intensity. By analyzing these dynamics we can extract numerical parameters which then enable us to characterize the biological system. It will then also be possible to characterize the event and trace back the timeline, to study the priori state. There are three types of dynamics. 
 \begin{enumerate}
 \item Position does not change but intensity changes over time. 
 \item Position changes but the intensity does not change. 
 \item Both Position and Intensity change over time. 
 \end{enumerate}
-The lecture is about the measurement of type 2 dynamics generally called object tracking. Realistic situation demands measurement of type 3 \textit{e.g.} you need to get a FRAP curve out of moving organelle, but we approximate the sample as type 2 as we need to learn the principle of tracking. Type 3 measurement will be your research that asks your ability to apply the full knowledge you acquired in the EMBL Advanced Imaging Course 2013, and probably some technique to use scripting languages to combine several tools.  
+The lecture is about the measurement of type 2 dynamics generally called object tracking. Realistic situation demands measurement of type 3 \textit{e.g.} you need to get a FRAP curve out of moving organelle, but we approximate the sample as type 2 as we need to learn the principle of tracking. Type 3 measurement will be your research that asks your ability to apply the full knowledge you acquired in the EMBL Advanced Imaging Course 2014, and probably some technique to use scripting languages to combine several tools.  
 \\
 \\
 For recent review on object tracking in cell and developmental biology, see \cite{Meijering2012}. This article also contains an extensive list of available tracking packages. A bit old review on single particle tracking by Saxton is still an excellent textbook providing rich biophysical insights for analyzing tracking results \citep{Saxton1997}. For the classic ``tracking'' mentioned in the talk, or the presumptive fate map, see \cite{Vogt1925} if you love biology (I am sure you do). This historical article could be downloaded from Google Books website. Magnificent movies produced by Keller \textit{et al}. using single plane illumination microscopy and extensive image processing that almost killed the EMBL cluster by steaming it could be accessed through the web page of the paper in Science \citep{Keller2008}. Comparison of segmentation strategy in object tracking was published in 2001 by \cite{Cheezum2001a} and has been a frequently cited paper in the field of biological object tracking. For overall review on image analysis methods see \cite{Hamilton2009}.
 
 
-\subsection{Segmentation techniques}
+\subsection{Dot Detection (Segmentation) techniques}
 \begin{itemize}
 \item Manual tracking\\
-ImageJ ``manual tracker plugin'', we will do this in the practical.
+ImageJ ``manual tracker plugin'', more explanation in the tutorial section belwo.
 \item Manual contour tracing and centroid
 \item Thresholding
 \item Local intensity maxima
+  \begin{itemize}
+      \item ParticleTracker plugin uses this method. 
+      \item for more details, see the tutorial below. 
+  \end{itemize}
 \item Gaussian-fitting
 \begin{itemize}
+\item Vaccinia Virus tracking example in the talk. 
 \item Many applications for getting sub-pixel resolution coordinates.
-\item You also saw this already in super-resolution microscopy talks by Ricardo and Melike. 
-\item Vaccinia Virus tracking example
+\item You also should have heard about fitting for dot detection in super-resolution microscopy talks by Ricardo and Melike.
+\item Aome available plugins for the Gaussian-fitting based tracking:
+\begin{itemize}
+    \item SpecleTrackerJ plugin
+      \begin{itemize}
+          \item A tracker for fluorescence speckle microscopy. 
+          \item \url{https://code.google.com/p/speckletrackerj/}
+      \end{itemize}
+      \item PTAj
+      \begin{itemize} 
+          \item A tracker for single molecule imaging. Uses minpak for the optimization. 
+          \item \url{https://github.com/arayoshipta/projectPTAj}
+      \end{itemize}
+      \item The GDSC Single Molecule Light Microscopy (SMLM) plugins
+      \begin{itemize}
+          \item For super-resolution microscopy (PALM/STORM) images, another one beside QuickPalm. It fits single molecule dots, recovers sub-pixel resolution coordinates of dots to render an super resolution image.
+          \item \url{http://www.sussex.ac.uk/gdsc/intranet/microscopy/imagej/smlm_plugins}
+          \item More tools for super-resolution microscopy are listed in \url{http://bigwww.epfl.ch/smlm/software/}
+      \end{itemize}
+\end{itemize}
 \end{itemize}
 \item Active Contour (SNAKES), Level-set
 \begin{itemize} 
@@ -127,7 +150,7 @@ ImageJ ``manual tracker plugin'', we will do this in the practical.
 	\end{itemize}
 \end{itemize}
 
-\subsection{Tracking Packages we do not try, but worth mentioning here.}
+\subsection{Tracking Packages worth mentioning here.}
 
 For single molecule trackers, there is a pretty new plugin called PTAj, written by Yoshiyuki Arai. We do not try this plugin in the practical but for those involved in single molecule imaging, it might be worth trying it at your home institute. The plugin offers sophisticated interface to review the tracking results. We all know that even though the tracking is automatic, we start checking each track manually just to be sure, and just to be sure\dots
 
@@ -147,9 +170,20 @@ There is also a new ``all-in-one'' tracking plugin for ImageJ. It's name is Trac
 
 \item[Get Image Files]\hfill\\
 
-If capturing of EB3 image sequences were successful (I hope so!!), we use them. Otherwise, we use an example image sequence of EB1 labeled cells. EB1 behaves similar to EB1 and moves along microtubules. A file named \textbf{eb18\_b.tif} is a sequence taken from single cultured cell labeled with eb1. This sequence is accessible by downloading an ImageJ plugin "Sample Image Loader". Instruction for installing this plugin is written in below.  
+We use an example image sequence of EB1 labeled cells. EB1 is a microtubule associated protein that ``moves'' along microtubules. A file named \textbf{eb18\_b.tif} is a sequence taken from single cultured cell labeled with eb1. This sequence is accessible by downloading an ImageJ plugin "Sample Image Loader". Instruction for installing this plugin is written in below.  
 
-Download and save the image files, the sequence you have taken or the example sequence eb18\_b.tif in your local computer. We try several different ways to measure movement of EB3 or EB1 protein by tracking. Before tracking, examine the sequence first using stack related functions. 
+\item[Downloading A plugin for sample images]\hfill\\
+
+Download the plugin "Sample Image Loader" linked in the following page and install it. 
+\begin{itemize}
+\item Download the plugin from \url{http://cmci.embl.de/downloads/sampleimageloader}
+\item Install the plugin using \verb"[Plugin > Install...]"
+\item Restart Fiji, just to be sure with the installation. 
+\item You should see a new menu item \textbf{EMBL}
+\end{itemize}
+
+
+The sequece can be opend by a menu command \verb"[EMBL > Samples > eb1\_8b.tif]". We try several different ways to measure movement of EB1 protein by tracking. Before tracking, examine the sequence first using stack related functions. Save the file as it is in your local machine, as it is not practical to download the image everytime when you want to open it. 
 
 \item[Open the file in Fiji by]\hfill\\
 
@@ -177,16 +211,8 @@ Running Z Projector plugin, written by Nico Stuurman, averages defined number of
 \item Download the plugin from above URL.
 \item Install the plugin using \verb"[Plugin > Install...]"
 \item Restart Fiji, just to be sure with the installation. 
-\item Try running it on EB1 or EB3 sequence. 
+\item Try running it on EB1 sequence. 
 \end{enumerate}
-
-\item[A plugin for sample images]\hfill\\
-
-Download the plugin "Sample Image Loader" linked in the following page and install just like you did with the running Z-projector. 
-\begin{itemize}
-\item\url{http://cmci.embl.de/downloads/sampleimageloader}
-\end{itemize}
-
 \end{description}
 
 \section{Manual Tracking}
@@ -228,7 +254,7 @@ site has a detailed instruction on how to use.
 \item[Measurements]\hfill\\
 
 \begin{enumerate}
-\item Your task now is to track the movement of individual EB3 signal using the ManualTracker PlugIn. To ease detection of the signal, enhance contrast and convert the image stack from 16-bit to 8-bit.
+\item Your task now is to track the movement of individual EB1 signal using the ManualTracker PlugIn. To ease detection of the signal, enhance contrast and convert the image stack from 16-bit to 8-bit.
 \\
 \\
 \verb"[Image > Adjust > Brightness and Contrast]"
@@ -266,7 +292,7 @@ You could track different particles by repeating steps between 2 and 3. Results 
 
 Kymographs are a two-dimensional time traces, where time \textit{t} is in Y axis and space along a one-dimensional contour is in \textit{X}, and the dynamical variable \textit{F(x,t) }is
 visualized as an image. Kymographs provide a fast and convenient way to
-visualize motion and dynamics in microscopy images.We try measuring the speed of EB1 or EB3 movement using Kymographs. 
+visualize motion and dynamics in microscopy images.We try measuring the speed of EB1 movement using Kymographs. 
 
 \begin{enumerate}
 \item Open the image stack. 
@@ -461,7 +487,7 @@ and scroll the page down to ``Installation'' section. There you will find links 
 \item \textbf{OPTIONAL} Since output is a text file of vector values, you could import the text file from Excel or R to plot histogram of velocities. 
 \end{enumerate}
 
-\bibliography{20121005AdvancedImaging_kota.bib}
+\bibliography{20140708AdvFlImging}
 
 \end{description}
 
